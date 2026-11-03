@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plinio Gold</title>
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Capitale, plusvalenza e guadagno netto delle sterline d’oro">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Plinio Gold">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+:root{
+  box-sizing:border-box;color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#000;--panel:#000;--ink:#f2f2f2;--muted:#9b9b9b;--line:#2a2a2a;
+  --gold:#f0c040;--vc:#4fb3bd;--nc:#b48cf0;--up:#58c487;--down:#e07a7a;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+html{background:#000}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--sans)}
+main{max-width:960px;margin:0 auto;padding:28px 18px 48px}
+h1{font:700 clamp(1.6rem,4vw,2.3rem)/1.15 var(--serif);margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 24px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-bottom:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:6px;padding:16px 18px}
+.kpi h2{font:600 1rem/1.3 var(--sans);margin:0;color:var(--muted)}
+.kpi .v{font:700 2.3rem/1.1 var(--serif);margin:6px 0 2px;white-space:nowrap}
+.kpi .d{font-weight:600}
+.kpi .s{color:var(--muted);font-size:.9rem;margin-top:2px}
+.kpi.gold{background:rgba(240,192,64,.09);border-color:var(--gold)}
+.kpi.gold h2{color:var(--gold)}
+.kpi.gold .v{color:var(--gold)}
+.up{color:var(--up)}.down{color:var(--down)}.flat{color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin-bottom:14px}
+.panel h2{font:700 1.15rem/1.3 var(--serif);margin:0 0 10px}
+.head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.head h2{margin:0}
+.tabs{display:flex;gap:6px}
+.tabs button{background:none;color:var(--muted);border:1px solid var(--line);padding:6px 12px;font-weight:600}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 6px;color:var(--muted);font-size:.9rem}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+svg{width:100%;height:auto;display:block}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{text-align:right;padding:8px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:600;color:var(--muted);font-size:.9rem}
+form{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+label{display:flex;flex-direction:column;font-size:.9rem;color:var(--muted);gap:4px}
+input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:8px 10px;width:150px}
+button{font:600 1rem var(--sans);background:var(--ink);color:var(--bg);border:0;border-radius:4px;padding:9px 16px;cursor:pointer}
+button.x{background:none;color:var(--muted);padding:2px 8px;font-weight:400}
+button.more{background:none;color:var(--ink);border:1px solid var(--line);margin-top:10px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--vc);outline-offset:2px}
+.note{color:var(--muted);font-size:.88rem;margin:10px 0 0}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.top img{width:64px;height:64px;border-radius:12px;flex:none}
+.top .t{flex:1;min-width:200px}
+.top .t h1{margin:0}.top .t .sub{margin:2px 0 0}
+#read{background:var(--gold);color:#000;padding:11px 18px}
+#read:disabled{opacity:.6;cursor:wait}
+.status{color:var(--muted);font-size:.92rem;margin:0 0 20px;min-height:1.4em}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <img src="icons/icon-192.png" alt="Plinio Gold" width="64" height="64">
+    <div class="t"><h1>Sterline d’oro</h1><p class="sub" id="sub"></p></div>
+    <button id="read" type="button">Leggi quotazione</button>
+  </div>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+  <section class="kpis" id="kpis"></section>
+  <section class="panel">
+    <div class="head">
+      <h2>Andamento</h2>
+      <div class="tabs">
+        <button id="t1" aria-pressed="true">Capitale e netto</button>
+        <button id="t2" aria-pressed="false">Quotazioni</button>
+        <button id="exp" type="button">Esporta CSV</button>
+      </div>
+    </div>
+    <p class="legend" id="legend"></p>
+    <svg id="chart" viewBox="0 0 640 300" role="img" aria-label="Grafico dell’andamento nel tempo"></svg>
+  </section>
+  <section class="panel">
+    <h2>I tre acquisti</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Lotto</th><th>Data</th><th>Tipo</th><th>Monete</th><th>Prezzo acq.</th><th>Investito</th><th>Valore oggi</th><th>Variazione</th></tr></thead>
+      <tbody id="lots"></tbody>
+    </table></div>
+  </section>
+  <section class="panel">
+    <h2>Storico</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Data</th><th>V.c.</th><th>N.c.</th><th>Capitale</th><th>Plusvalenza</th><th>Netto</th><th>Δ capitale</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <button class="more" id="more" type="button"></button>
+  </section>
+  <section class="panel">
+    <h2>Aggiungi una quotazione</h2>
+    <form id="f">
+      <label>Data<input type="date" id="fd" required></label>
+      <label>V.c., denaro (€)<input type="number" id="fv" step="0.01" min="0" required></label>
+      <label>N.c., denaro (€)<input type="number" id="fn" step="0.01" min="0" required></label>
+      <button type="submit">Aggiungi</button>
+    </form>
+    <p class="note" id="note">Le quotazioni aggiunte restano salvate in questo browser. Capitale = 214 sterline v.c. + 165 sterline n.c. al denaro. Plusvalenza = capitale − investito. Netto = plusvalenza − 26%. «Leggi quotazione» carica l’ultima quotazione registrata e, se serve, prova a leggerla da Confinvest. Il CSV usa «;» come separatore e la virgola per i decimali.</p>
+  </section>
+</main>
+<script>
+let HIST=[["2022-03-08",420.05,430],["2022-03-09",425.05,432],["2022-03-18",410.95,415.2],["2022-03-25",417,422],["2022-04-13",416,425],["2022-04-22",420,422.5],["2022-04-29",415,425],["2022-05-09",413,417],["2022-09-09",405,420],["2022-09-23",399.6,416.6],["2022-10-10",402,419.6],["2022-11-04",405.5,420.5],["2022-11-09",406,421],["2023-01-20",406,421],["2023-03-20",415,431],["2023-04-14",417,432],["2023-05-15",418,432],["2023-09-19",417,422],["2023-10-20",428,435],["2023-12-05",430,435],["2024-01-31",431,436],["2024-03-04",444,448],["2024-03-11",460,462],["2024-03-22",465,469],["2024-03-29",478,483],["2024-04-10",499.5,505],["2024-04-11",501,507],["2024-04-12",504,510],["2024-04-15",511,515],["2024-04-17",513,519],["2024-04-19",515,521],["2024-04-30",503,508],["2024-05-20",518,523],["2024-06-25",502,507],["2024-07-16",516,522],["2024-07-17",517,523],["2024-08-01",521,526],["2024-08-17",525,530],["2024-09-13",530,535],["2024-09-20",534,539],["2024-09-23",540,545],["2024-09-26",545,550],["2024-10-03",551,556],["2024-10-04",553,558],["2024-10-16",563,568],["2024-10-17",565,570],["2024-10-18",570,575],["2024-10-21",575,580],["2024-10-22",578,583],["2024-10-23",582,587],["2024-10-28",586,591],["2024-10-29",588,593],["2024-11-11",557,562],["2024-11-22",588,593],["2024-12-12",591,596],["2024-12-31",580,585],["2025-01-02",588,593],["2025-01-03",597,602],["2025-01-13",603,608],["2025-01-16",605,610],["2025-01-29",607,612],["2025-01-30",611,616],["2025-01-31",620,625],["2025-02-03",628,633],["2025-02-05",630,635],["2025-02-07",631,636],["2025-02-10",633,638],["2025-02-11",634,639],["2025-02-12",637,642],["2025-02-13",641,646],["2025-02-14",642,647],["2025-02-15",645,650],["2025-02-20",646,651],["2025-03-04",636,641],["2025-03-10",613,618],["2025-03-14",632,637],["2025-03-19",637,642],["2025-03-20",642,647],["2025-03-26",645,650],["2025-03-27",650,655],["2025-03-28",652,657],["2025-03-31",662,667],["2025-04-01",665,670],["2025-04-16",671,676],["2025-04-22",694,699],["2025-06-13",682,687],["2025-06-27",645,650],["2025-07-23",668,674],["2025-09-01",680,685],["2025-09-03",697,702],["2025-09-08",707,713],["2025-09-09",719,724],["2025-09-16",721,726],["2025-09-22",725,730],["2025-09-23",736,741],["2025-09-26",741,746],["2025-09-29",746,751],["2025-10-01",753,758],["2025-10-02",757,762],["2025-10-06",776,781],["2025-10-07",782,787],["2025-10-08",807,812],["2025-10-13",813,818],["2025-10-14",815,820],["2025-10-15",833,838],["2025-10-16",840,845],["2025-10-17",855,860],["2025-11-11",800,805],["2025-11-13",838,843],["2025-11-25",824,829],["2025-12-09",825,830],["2025-12-12",855,860],["2025-12-22",862,867],["2025-12-23",875,880],["2026-01-07",880,885],["2026-01-09",893,895],["2026-01-12",911,916],["2026-01-14",915,920],["2026-01-16",912,917],["2026-01-19",925,930],["2026-01-20",929,934],["2026-01-21",953,958],["2026-01-23",971,976],["2026-01-26",991,996],["2026-01-27",985,990],["2026-01-28",1015,1020],["2026-01-29",1068,1073],["2026-02-03",964,969],["2026-02-04",997,1002],["2026-02-09",973,978],["2026-02-11",985,990],["2026-02-19",979,984],["2026-02-20",980,985],["2026-02-21",995,1000],["2026-02-23",1020,1025],["2026-03-02",1058,1063],["2026-03-18",974,979],["2026-04-16",942,947],["2026-04-29",898,903],["2026-06-29",809,814],["2026-08-20",883,888],["2026-08-25",917,922],["2026-10-30",806,811],["2026-11-02",811,816]];
+const LOTS=[
+  {id:"A",d:"2018-01-11",t:"Sterlina v.c.",n:214,p:280,k:"vc"},
+  {id:"B",d:"2019-12-06",t:"Sterlina n.c.",n:45,p:333,k:"nc"},
+  {id:"C",d:"2022-02-24",t:"Sterlina n.c.",n:120,p:414,k:"nc"}
+];
+const EVENTS=[{d:"2024-11-05",t:"Elezioni Trump"},{d:"2026-02-28",t:"Guerra Iran"}];
+const TAX=0.26;
+const NVC=LOTS.filter(l=>l.k==="vc").reduce((s,l)=>s+l.n,0);
+const NNC=LOTS.filter(l=>l.k==="nc").reduce((s,l)=>s+l.n,0);
+const INV=LOTS.reduce((s,l)=>s+l.n*l.p,0);
+const KEY="sterline-extra2";
+let extra=[],tab=1,all=false,rawExtra=null;
+try{extra=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){extra=[]}
+if(!Array.isArray(extra))extra=[];
+const sg=n=>n>0?"+":n<0?"−":"";
+const num=n=>Math.round(Math.abs(n)).toLocaleString("it-IT");
+const eur=n=>(n<0?"−":"")+num(n)+" €";
+const eurS=n=>sg(Math.round(n))+num(n)+" €";
+const pct=n=>sg(n)+Math.abs(n*100).toLocaleString("it-IT",{maximumFractionDigits:1})+"%";
+const q2=n=>n.toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fdate=s=>{const[y,m,d]=s.split("-");return d+"/"+m+"/"+y};
+const cls=n=>n>0?"up":n<0?"down":"flat";
+function calc(r){
+  const cap=NVC*r.vc+NNC*r.nc,pl=cap-INV,tax=Math.max(0,pl)*TAX;
+  return {...r,cap,pl,tax,net:pl-tax};
+}
+function data(){
+  const map=new Map();
+  HIST.forEach(r=>map.set(r[0],{d:r[0],vc:r[1],nc:r[2],own:false}));
+  extra.forEach(r=>map.set(r.d,{...r,own:true}));
+  return [...map.values()].sort((a,b)=>a.d.localeCompare(b.d)).map(calc);
+}
+function render(){
+  const D=data(),last=D[D.length-1],prev=D[D.length-2];
+  document.getElementById("sub").textContent="Ultimo aggiornamento: "+fdate(last.d)+". Quotazioni al denaro, imposta del 26% sulla plusvalenza.";
+  const peak=D.reduce((m,r)=>r.cap>m.cap?r:m,D[0]);
+  const dp=k=>prev?last[k]-prev[k]:null;
+  const dl=k=>{const x=dp(k);return x==null?'<span class="flat">primo dato</span>':'<span class="'+cls(x)+'">'+(x===0?"invariato":eurS(x)+" rispetto al dato precedente")+"</span>"};
+  const cards=[
+    ["Plusvalenza","pl","var(--vc)",eurS(last.pl),dl("pl"),pct(last.pl/INV)+" sull’investito di "+eur(INV)],
+    ["Guadagno netto","net","var(--up)",eurS(last.net),dl("net"),"Dopo imposta del 26%: −"+eur(last.tax).replace("−","")],
+    ["Capitale","cap","var(--gold)",eur(last.cap),dl("cap"),"Dal massimo ("+fdate(peak.d)+"): "+pct(last.cap/peak.cap-1)]
+  ];
+  const k=document.getElementById("kpis");k.innerHTML="";
+  cards.forEach(([t,key,c,v,d,s])=>{
+    const e=document.createElement("div");e.className="kpi"+(key==="cap"?" gold":"");e.style.setProperty("--c",c);
+    e.innerHTML="<h2>"+t+'</h2><div class="v">'+v+'</div><div class="d">'+d+'</div><div class="s">'+s+"</div>";
+    k.appendChild(e);
+  });
+  const lb=document.getElementById("lots");lb.innerHTML="";
+  LOTS.forEach(l=>{
+    const now=l.n*last[l.k],inv=l.n*l.p,v=now/inv-1,tr=document.createElement("tr");
+    tr.innerHTML="<td>"+l.id+"</td><td>"+fdate(l.d)+"</td><td>"+l.t+"</td><td>"+l.n+"</td><td>"+q2(l.p)+" €</td><td>"+eur(inv)+"</td><td>"+eur(now)+'</td><td class="'+cls(v)+'">'+pct(v)+"</td>";
+    lb.appendChild(tr);
+  });
+  const tb=document.getElementById("rows");tb.innerHTML="";
+  const R=D.slice().reverse(),shown=all?R:R.slice(0,15);
+  shown.forEach((r,i)=>{
+    const p=R[i+1],x=p?r.cap-p.cap:null,tr=document.createElement("tr");
+    tr.innerHTML="<td>"+fdate(r.d)+"</td><td>"+q2(r.vc)+"</td><td>"+q2(r.nc)+"</td><td>"+eur(r.cap)+"</td><td>"+eurS(r.pl)+"</td><td>"+eurS(r.net)+'</td><td class="'+(x==null?"flat":cls(x))+'">'+(x==null?"–":eurS(x))+"</td><td></td>";
+    if(r.own){
+      const b=document.createElement("button");b.className="x";b.type="button";b.textContent="Rimuovi";b.setAttribute("aria-label","Rimuovi la quotazione del "+fdate(r.d));
+      b.onclick=()=>{extra=extra.filter(e=>e.d!==r.d);save();render()};
+      tr.lastChild.appendChild(b);
+    }
+    tb.appendChild(tr);
+  });
+  const m=document.getElementById("more");
+  m.textContent=all?"Mostra solo le ultime 15":"Mostra tutte le "+D.length+" quotazioni";
+  m.onclick=()=>{all=!all;render()};
+  chart(D);
+}
+function nice(lo,hi){
+  const raw=(hi-lo)/4,mag=Math.pow(10,Math.floor(Math.log10(raw))),step=[1,2,5,10].find(m=>m*mag>=raw)*mag;
+  return {step,lo:Math.floor(lo/step)*step,hi:Math.ceil(hi/step)*step};
+}
+function chart(D){
+  const defs=tab===1
+    ?[{n:"Capitale",c:"var(--gold)",f:r=>r.cap,dy:-9},{n:"Guadagno netto",c:"var(--up)",f:r=>r.net,dy:-9},{n:"Investito",c:"var(--muted)",f:()=>INV,dash:true,dy:-8}]
+    :[{n:"Sterlina vecchio conio",c:"var(--vc)",f:r=>r.vc,dy:18},{n:"Sterlina nuovo conio",c:"var(--nc)",f:r=>r.nc,dy:-9}];
+  document.getElementById("legend").innerHTML=defs.map(s=>'<span><i style="background:'+s.c+'"></i>'+s.n+"</span>").join("");
+  const W=640,H=300,L=58,Rt=22,T=26,B=32;
+  const t=s=>Date.parse(s),t0=t(D[0].d),t1=t(D[D.length-1].d),span=Math.max(1,t1-t0);
+  const vals=D.flatMap(r=>defs.map(s=>s.f(r)));
+  const sc=nice(Math.min(...vals),Math.max(...vals));
+  const X=s=>L+(t(s)-t0)*(W-L-Rt)/span,Y=v=>T+(sc.hi-v)*(H-T-B)/(sc.hi-sc.lo);
+  let o="";
+  for(let v=sc.lo;v<=sc.hi+1e-9;v+=sc.step){
+    o+='<line x1="'+L+'" x2="'+(W-Rt)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)"/><text x="'+(L-8)+'" y="'+(Y(v)+5)+'" text-anchor="end" font-size="14" fill="var(--muted)">'+(Math.abs(v)>=1000?(v/1000).toLocaleString("it-IT")+"k":v.toLocaleString("it-IT"))+"</text>";
+  }
+  const y0=new Date(t0).getUTCFullYear(),y1=new Date(t1).getUTCFullYear();
+  for(let y=y0+1;y<=y1;y++){
+    const s=y+"-01-01";
+    o+='<line x1="'+X(s)+'" x2="'+X(s)+'" y1="'+T+'" y2="'+(H-B)+'" stroke="var(--line)" stroke-dasharray="2 4"/><text x="'+X(s)+'" y="'+(H-10)+'" text-anchor="middle" font-size="14" fill="var(--muted)">'+y+"</text>";
+  }
+  EVENTS.forEach(e=>{
+    if(t(e.d)<t0||t(e.d)>t1)return;
+    const x=X(e.d),end=x>W-120;
+    o+='<line x1="'+x+'" x2="'+x+'" y1="'+(T-4)+'" y2="'+(H-B)+'" stroke="var(--muted)" stroke-dasharray="4 3" opacity=".7"/><text x="'+(x+(end?-5:5))+'" y="'+(T-9)+'" text-anchor="'+(end?"end":"start")+'" font-size="13" fill="var(--muted)">'+e.t+"</text>";
+  });
+  defs.forEach(s=>{
+    o+='<polyline fill="none" stroke="'+s.c+'" stroke-width="'+(s.dash?1.5:2.5)+'" stroke-linejoin="round"'+(s.dash?' stroke-dasharray="6 4"':"")+' points="'+D.map(r=>X(r.d).toFixed(1)+","+Y(s.f(r)).toFixed(1)).join(" ")+'"/>';
+    const r=D[D.length-1];
+    o+='<circle cx="'+X(r.d)+'" cy="'+Y(s.f(r))+'" r="4" fill="'+s.c+'"/>';
+    if(!s.dash)o+='<text x="'+(W-Rt)+'" y="'+(Y(s.f(r))+s.dy)+'" text-anchor="end" font-size="14" font-weight="600" fill="'+s.c+'">'+(tab===1?num(s.f(r)):q2(s.f(r)))+"</text>";
+  });
+  document.getElementById("chart").innerHTML=o;
+}
+function setTab(n){
+  tab=n;
+  document.getElementById("t1").setAttribute("aria-pressed",n===1);
+  document.getElementById("t2").setAttribute("aria-pressed",n===2);
+  render();
+}
+document.getElementById("t1").onclick=()=>setTab(1);
+document.getElementById("t2").onclick=()=>setTab(2);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(extra))}catch(e){document.getElementById("note").textContent="Impossibile salvare nel browser: la quotazione resta visibile solo finché la pagina è aperta."}}
+document.getElementById("fd").value=new Date().toISOString().slice(0,10);
+document.getElementById("f").addEventListener("submit",e=>{
+  e.preventDefault();
+  const d=document.getElementById("fd").value,vc=parseFloat(document.getElementById("fv").value),nc=parseFloat(document.getElementById("fn").value);
+  if(!d||isNaN(vc)||isNaN(nc))return;
+  extra=extra.filter(r=>r.d!==d);extra.push({d,vc,nc});save();render();
+  document.getElementById("fv").value="";document.getElementById("fn").value="";
+});
+const SRC="https://www.confinvest.it/quotazioni/";
+const PROXY="https://api.allorigins.win/raw?url=";
+function parseConfinvest(html){
+  const t=html.replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/&nbsp;/g," ").replace(/\s+/g," ");
+  const d=t.match(/Quotazioni indicative del (\d{2})-(\d{2})-(\d{4})/i);
+  const v=t.match(/Sterlina Vecchio Conio\s*\|?\s*([\d.]+,\d{2})/i);
+  const n=t.match(/Sterlina Nuovo Conio\s*\|?\s*([\d.]+,\d{2})/i);
+  if(!d||!v||!n)return null;
+  const f=s=>parseFloat(s.replace(/\./g,"").replace(",","."));
+  return {d:d[3]+"-"+d[2]+"-"+d[1],vc:f(v[1]),nc:f(n[1])};
+}
+async function loadHist(){
+  const r=await fetch("data/storico.json",{cache:"no-store"});
+  if(!r.ok)throw new Error("storico");
+  const j=await r.json();
+  if(Array.isArray(j)&&j.length)HIST=j;
+}
+async function live(){
+  try{
+    const c=new AbortController(),to=setTimeout(()=>c.abort(),8000);
+    const r=await fetch(PROXY+encodeURIComponent(SRC),{signal:c.signal});clearTimeout(to);
+    return r.ok?parseConfinvest(await r.text()):null;
+  }catch(e){return null}
+}
+function stato(){
+  const L=data().slice(-1)[0];
+  document.getElementById("status").textContent="Ultima quotazione: "+fdate(L.d)+" · v.c. "+q2(L.vc)+" € · n.c. "+q2(L.nc)+" €";
+}
+async function leggi(){
+  const b=document.getElementById("read"),st=document.getElementById("status");
+  b.disabled=true;st.textContent="Leggo la quotazione…";
+  let ok=true;
+  try{await loadHist()}catch(e){ok=false}
+  try{
+    const last=data().slice(-1)[0];
+    if(last.d<new Date().toISOString().slice(0,10)){
+      const q=await live();
+      if(q&&q.d>=last.d){extra=extra.filter(r=>r.d!==q.d);extra.push({d:q.d,vc:q.vc,nc:q.nc});save()}
+    }
+  }catch(e){}
+  render();stato();
+  if(!ok)st.textContent+=" (archivio non raggiungibile: dati salvati sul dispositivo)";
+  b.disabled=false;
+}
+function dlCsv(name,text){
+  const u=URL.createObjectURL(new Blob([text],{type:"text/csv;charset=utf-8"}));
+  const a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),1500);
+}
+function csv(){
+  const D=data(),dec=n=>String(Math.round(n*100)/100).replace(".",",");
+  let head,rows;
+  if(tab===1){
+    head=["Data","Capitale","Investito","Plusvalenza","Imposta 26%","Guadagno netto"];
+    rows=D.map(r=>[r.d,dec(r.cap),dec(INV),dec(r.pl),dec(r.tax),dec(r.net)]);
+  }else{
+    head=["Data","Sterlina v.c. denaro","Sterlina n.c. denaro"];
+    rows=D.map(r=>[r.d,dec(r.vc),dec(r.nc)]);
+  }
+  return "\uFEFF"+[head,...rows].map(a=>a.join(";")).join("\r\n")+"\r\n";
+}
+document.getElementById("exp").onclick=()=>dlCsv(tab===1?"sterline-capitale-netto.csv":"sterline-quotazioni.csv",csv());
+document.getElementById("read").onclick=leggi;
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+
+render();stato();loadHist().then(()=>{render();stato()}).catch(()=>{});
+</script>
+</body>
+</html>
